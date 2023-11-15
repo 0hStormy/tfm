@@ -11,10 +11,9 @@ import platform
 import keyboard
 import time
 import cursor
+import subprocess
+from multiprocessing import Process
 from colorama import Fore, Back, Style
-
-# Variables
-currentDirectory = os.path.expanduser("~")
 
 # Functions \/
 
@@ -22,7 +21,24 @@ currentDirectory = os.path.expanduser("~")
 def drawTopBar():
     dirStringLen = len(currentDirectory + ' | Press H For help')
     print(f'{Back.CYAN}{currentDirectory} | Press H For help' + ' ' * (terminalX - dirStringLen) + Style.RESET_ALL)
+    
+# Create tempfile
+def createTempfile():
 
+    try:
+        with open('tfm', 'w') as f:
+            f.write(os.path.expanduser("~"))
+    except:
+        print("Can't open tempfile")
+# Read tempfile
+def readTempfile():
+    try:
+        with open('tfm', 'r') as f:
+            global currentDirectory
+            currentDirectory = f.read()
+    except:
+        print("Can't open tempfile")
+        
 # Clear the screen    
 def clearScreen():
     if platform.system() == 'Windows':
@@ -30,6 +46,10 @@ def clearScreen():
     else:
         os.system('clear')
         
+# Check for key presses
+def keyChecker():
+    if keyboard.is_pressed("d"):
+        subprocess.run(['python', 'cd.py'])
         
 # Draw contents
 def drawContents():
@@ -46,15 +66,25 @@ def drawContents():
         
         if i == (terminalY - 4):
             break
+        
+# Main loop   
+def mainLoop():
+    while True:
+        readTempfile()
+        cursor.hide()
+        global terminalX
+        global terminalY
+        terminalY = os.get_terminal_size().lines
+        terminalX = os.get_terminal_size().columns
+        int(terminalX)
+        int(terminalY)
+        drawTopBar()
+        drawContents()
+        keyChecker()      
+        clearScreen()
+        
+# -------------------- #
 
-# Main loop     
-while True:
-    cursor.hide()
-    terminalY = os.get_terminal_size().lines
-    terminalX = os.get_terminal_size().columns
-    int(terminalX)
-    int(terminalY)
-    drawTopBar()
-    drawContents()
-    time.sleep(0.1)
-    clearScreen()
+createTempfile()
+
+mainLoop()
