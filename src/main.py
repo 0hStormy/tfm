@@ -45,12 +45,7 @@ def clearScreen():
         os.system('cls')
     else:
         os.system('clear')
-        
-# Check for key presses
-def keyChecker():
-    if keyboard.is_pressed("d"):
-        subprocess.run(['python', 'cd.py'])
-        
+         
 # Draw contents
 def drawContents():
     folderContents = os.listdir(currentDirectory)
@@ -70,6 +65,16 @@ def drawContents():
 # Main loop   
 def mainLoop():
     while True:
+        if keyboard.is_pressed("d"):
+            global haultLoop
+            haultLoop = True
+            subprocess.run(['python', 'cd.py'])
+            haultLoop = False
+                
+            if haultLoop == True:
+                while haultLoop == True:
+                    time.sleep(0.1)
+        clearScreen()          
         readTempfile()
         cursor.hide()
         global terminalX
@@ -80,8 +85,7 @@ def mainLoop():
         int(terminalY)
         drawTopBar()
         drawContents()
-        keyChecker()      
-        clearScreen()
+        time.sleep(0.2)            
         
 # -------------------- #
 

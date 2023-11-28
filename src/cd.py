@@ -6,14 +6,12 @@
 ##################################################
 
 # Packages
-import keyboard
 import os
-from colorama import Fore, Back, Style
+import keyboard
 
-# Change Directory
-keyboard.send('backspace')
+for each in range(5):
+    keyboard.send('backspace')
 dirInput = input(f'Directory:')
-print(Style.RESET_ALL)
 try:
     with open('tfm', 'w') as f:
         f.write(dirInput)
